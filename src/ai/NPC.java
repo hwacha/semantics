@@ -13,89 +13,72 @@ public class NPC {
 		this.model = model;
 	}
 	
-	public void talkTo(NPC to) {
-		//TODO mix your model with the other NPC.
+	private String constant(char c, String s) {
+		char[] cs = new char[s.length()];
+		for (int i = 0; i < cs.length; i++) {
+			cs[i] = c;
+		}
+		return new String(cs);
 	}
 	
-	public void talkWithPlayer() throws IOException {
-		BufferedReader r  = new BufferedReader(new InputStreamReader(System.in));
-		System.out.println("(Enter the number that corresponds with your choice.");
-		System.out.println("Jim: Where were you born?");
-		System.out.println("	1. Paris (Honest)");
-		System.out.println("	2. France (Honest, more vague)");
-		System.out.println("	3. Elmira (Lie)");
-		System.out.println("	4. New York (Lie, more vague)");
+	private boolean pollOption(BufferedReader r, String option) throws InterruptedException, IOException {
+		System.out.print(option);
+		Thread.sleep(1500);
+		if (r.ready()) {
+			r.readLine();
+			return true; 
+		}
+		String bs = constant('\b', option);
+		System.out.print(bs);
+		System.out.print(constant(' ', option));
+		System.out.print(bs);
 		
-		String response = r.readLine();
-		if (response.equals("1")) //Paris
-		{
-			System.out.println ("Jim: Really? The Boss is really not a fan of foreigners...");
-			System.out.println ("	1. Sorry- did I say Paris? I meant New York. I lived in Paris for a couple of years."
-					+ " (Lie, relatively convincing)");
-			System.out.println ("	2. Did I say Paris? I meant New York. (Lie, hardly convincing)");
-			System.out.println ("	3. Yep. Paris. (Honest)");
-			String currentLine = r.readLine();
-			if (currentLine.equals("1")) //relatively convincing lie
-			{
-				System.out.println ("Oh, alright. I've always wanted to try this pizza place in New York, Jo's. Have you heard of it?");
-				System.out.println ("	1. Yes. (Lie)");
-				System.out.println ("	2. No. (Honest)");
-				if(r.readLine().equals("1")) //yes, I've been to Jo's.
-				{
-					System.out.println("Have you been there?");
-					System.out.println ("	1. Of course! (Lie)");
-					System.out.println ("	2. No. (Honest)");
-					if(r.readLine().equals("1"))
-					{
-						System.out.println ("What do you recommend?");
-						//...more questioning
-					}
-					if(r.readLine().equals("2"))
-					{
-						System.out.println ("That's too bad.");
-						//WIN: You've succeeded in convincing Jim you are a legit New Yorker.
-					}
-				}
-				else if (r.readLine().contentEquals("2")) //no, I haven't heard of Jo's
-				{
-					System.out.println("H");
-					//LOSE: Jim now very much doubts you're from NY, and will communicate this to the boss.
-				}
-			}
-			else if (currentLine.equals("2")) //unconvincing lie that you meant to say NY
-			{
-				System.out.println("Why would you confuse those two?");
-				// LOSE: Jim now very much doubts you're from NY, and will communicate this to the boss.
-			}
-			else if (currentLine.equals("3")) //truth
-			{
-				System.out.println ("Jim: That's too bad.");
-				// LOSE: Jim now knows you're not from NY, and will communicate this to the boss.
-			}
-		} 
-		else if (response.equals("2")) //France
-		{
-			//similar thing to Paris response
-		}
-		else if (response.equals("3")) {
-			System.out.println("Sounds awful.");
-		} //Elmira
-		else if (response.equals("4")) {
-			System.out.println("Ayyy!!!!!!");
-		}
-			
+		return false;
 	}
 	
-	public static void main(String[] args) throws InterruptedException {
-//		try {
-//			(new NPC(null)).talkWithPlayer();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		System.out.print("option1");
-		Thread.sleep(1000);
-		System.out.print("\b\b\b\b\b\b\b");
-		System.out.println("option2");
+	private void question(BufferedReader r, String question, String[] options, String[] responses) throws InterruptedException, IOException {
+		assert(options.length == responses.length);
+		
+		System.out.println(question);
+		Thread.sleep(1500);
+		
+		boolean isDefault = true;
+		
+		for (int i = 0; i < options.length - 1; i++) {
+			if (pollOption(r, options[i])) {
+				System.out.println(responses[i]);
+				isDefault = false;
+				break;
+			}
+		}
+		
+		if (isDefault) {
+			System.out.println(options[options.length - 1]);
+			System.out.println(responses[options.length - 1]);
+		}
+		
+		System.out.println();
+	}
+	
+	public void talkWithPlayer() throws IOException, InterruptedException {
+		BufferedReader r  = new BufferedReader(new InputStreamReader(System.in));
+		
+		question(r, "What's your name?", new String[]{"Bill", "Mike", "Dan"},
+				new String[]{"Bill is a nice name.", "Mike is a shitty name.", "Dan is a generic name."});
+		
+		question(r, "Where are you from?", new String[]{"Elmira", "New York", "Paris", "France", "Mars"},
+				new String[]{"Elmira sounds awful.", "New York is all right.", "Paris sucks.", "France is great.", "Oh."});
+
+		System.out.println("I don't want to be rude or anything, but I'm kind of bored right now. Catch you later!");
+	}
+	
+	public static void main(String[] args) {
+		NPC npc = new NPC(null);
+		try {
+			npc.talkWithPlayer();
+		} catch (IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
