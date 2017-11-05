@@ -3,22 +3,19 @@ package model;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import proof.*;
 import syntax.Expression;
 
 public class Model {
-	private HashMap<Integer, Expression> names;
-	private HashMap<Integer, SemanticValue> model;
-	private HashSet<Rule> rules;
+	private HashMap<Integer, Expression> names = new HashMap<Integer, Expression>();
+	private HashMap<Integer, SemanticValue> model = new HashMap<Integer, SemanticValue>();
+	// to speed things up, change from a map to semantic values to rules
+	private HashSet<Rule> rules = new HashSet<Rule>();
 	
-	public Model() {
-		names = new HashMap<Integer, Expression>();
-		model = new HashMap<Integer, SemanticValue>();
-		// to speed things up, change from a map to semantic values to rules
-		rules = new HashSet<Rule>();
-	}
+	public Model() {}
 	
 	public boolean add(SemanticValue... values) {
 		for (SemanticValue x : values) {
@@ -58,7 +55,7 @@ public class Model {
 		return false;
 	}
 	
-	public boolean update(proof.LogicalForm l) {
+	public boolean update(LogicalForm l) {
 		if (l.isClosed() && l.isFormula()) {
 			SemanticValue s = l.denotation(this);
 			if (s instanceof TruthValue) {
@@ -73,6 +70,20 @@ public class Model {
 			}
 		}
 		return false;
+	}
+	
+	// updates THIS model according to m (m is unchanged)
+	public boolean update(Model m) {
+		boolean hasUpdated = false;
+		for (Entry<Integer, SemanticValue> x : m.model.entrySet()) {
+			if (this.model.containsKey(x.getKey())) {
+				hasUpdated = this.model.get(x.getKey()).update(x.getValue()) || hasUpdated;
+			} else {
+				this.model.put(x.getKey(), x.getValue());
+				hasUpdated = true;
+			}
+		}
+		return hasUpdated;
 	}
 	
 	private Set<Integer> getDomain(SemanticType t) {

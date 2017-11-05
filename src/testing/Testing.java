@@ -1,5 +1,8 @@
 package testing;
 
+import java.io.IOException;
+
+import ai.*;
 import model.*;
 import proof.*;
 import syntax.*;
@@ -11,9 +14,12 @@ public class Testing {
 		// people
 		Individual bill = new Individual(4);
 		Individual mike = new Individual(5);
+		Individual dan = new Individual(20);
+		Individual player = new Individual(123);
 		
 		Word billName = new Word("Bill", new NP(), 4);
 		Word mikeName = new Word("Mike", new NP(), 5);
+		Word danName = new Word("Dan", new NP(), 20);
 		
 		// places
 		Individual e = new Individual(6);
@@ -31,6 +37,7 @@ public class Testing {
 		Function isPlace = new Function(10);
 		isPlace.set(bill, new TruthValue(false));
 		isPlace.set(mike, new TruthValue(false));
+		isPlace.set(player, new TruthValue(false));
 		isPlace.set(e, new TruthValue(true));
 		isPlace.set(n, new TruthValue(true));
 		isPlace.set(p, new TruthValue(true));
@@ -41,25 +48,25 @@ public class Testing {
 		// 2-place functions
 		
 		// x contains y
-		Function containsE = new Function(-1);
+		Function containsE = new Function();
 		containsE.set(e, new TruthValue());
 		containsE.set(n, new TruthValue());
 		containsE.set(p, new TruthValue());
 		containsE.set(f, new TruthValue());
 		
-		Function containsN = new Function(-1);
+		Function containsN = new Function();
 		containsN.set(e, new TruthValue());
 		containsN.set(n, new TruthValue());
 		containsN.set(p, new TruthValue());
 		containsN.set(f, new TruthValue());
 		
-		Function containsP = new Function(-1);
+		Function containsP = new Function();
 		containsP.set(e, new TruthValue());
 		containsP.set(n, new TruthValue());
 		containsP.set(p, new TruthValue());
 		containsP.set(f, new TruthValue());
 		
-		Function containsF = new Function(-1);
+		Function containsF = new Function();
 		containsF.set(e, new TruthValue());
 		containsF.set(n, new TruthValue());
 		containsF.set(p, new TruthValue());
@@ -73,8 +80,10 @@ public class Testing {
 		contains.set(f, containsF);
 		
 		Function bornin = new Function(12);
-		Function billWasBornIn = new Function(-1);
-		Function mikeWasBornIn = new Function(-1);
+		Function billWasBornIn = new Function();
+		Function mikeWasBornIn = new Function();
+		Function danWasBornIn = new Function();
+		Function playerWasBornIn = new Function();
 		
 		billWasBornIn.set(e, new TruthValue(true));
 		billWasBornIn.set(n, new TruthValue());
@@ -86,13 +95,26 @@ public class Testing {
 		mikeWasBornIn.set(p, new TruthValue(true));
 		mikeWasBornIn.set(f, new TruthValue());
 		
+		danWasBornIn.set(e, new TruthValue());
+		danWasBornIn.set(n, new TruthValue());
+		danWasBornIn.set(p, new TruthValue(true));
+		danWasBornIn.set(f, new TruthValue());
+		
+		playerWasBornIn.set(e, new TruthValue());
+		playerWasBornIn.set(n, new TruthValue());
+		playerWasBornIn.set(p, new TruthValue());
+		playerWasBornIn.set(f, new TruthValue());
+		
 		bornin.set(bill, billWasBornIn);
 		bornin.set(mike, mikeWasBornIn);
+		bornin.set(dan, danWasBornIn);
+		bornin.set(player, playerWasBornIn);
 		
 		Model m = new Model();
 		m.add(bill, mike, e, n, p, f, isPlace, contains, bornin);
 		m.addName(4, billName);
 		m.addName(5, mikeName);
+		m.addName(20, danName);
 		m.addName(6, elmiraName);
 		m.addName(7, newYorkName);
 		m.addName(8, parisName);
@@ -129,10 +151,10 @@ public class Testing {
 		
 		// System.out.println("New York contains Elmira. => " + m.satisfies(nContainsE));
 		// System.out.println(contains);
-		System.out.println("updating..." + m.update(nContainsE));
-		System.out.println("updating..." + m.update(fContainsP));
-		System.out.println("updating..." + m.update(notNContainsF));
-		System.out.println("updating..." + m.update(notFContainsN));
+		// System.out.println("updating..." + m.update(nContainsE));
+		// System.out.println("updating..." + m.update(fContainsP));
+		// System.out.println("updating..." + m.update(notNContainsF));
+		// System.out.println("updating..." + m.update(notFContainsN));
 		// System.out.println("New York contains Elmira. => " + m.satisfies(nContainsE));
 		
 		// System.out.println(nContainsE);
@@ -218,10 +240,26 @@ public class Testing {
 		
 		// m.update(new Application(new Application(bornRef, new Constant(new E(), 4)), new Constant(new E(), 9)));
 		m.setNames();
-		System.out.println(m.get(11));
-		System.out.println(m.get(12));
+		// System.out.println(m.get(11));
+		// System.out.println(m.get(12));
 		
-		Phrase phr = new Phrase(billName, isPlaceName);
-		System.out.println(phr + " => " + phr.meaning(m));
+		// Phrase phr = new Phrase(billName, isPlaceName);
+		// System.out.println(phr + " => " + phr.meaning(m));
+		
+		Model pollysModel = new Model();
+		pollysModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+		pollysModel.update(m);
+		
+		NPC polly = new NPC(pollysModel);
+		try {
+			polly.talkWithPlayer();
+		} catch (IOException | InterruptedException e5) {
+			e5.printStackTrace();
+		}
+		
+		// System.out.println(((Function) m.get(12)).apply(new Individual(123)));
+		// System.out.println(mo.get(new Individual(123)));
+		System.out.println(polly.getModel().get(12));
+		
 	}
 }

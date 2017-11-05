@@ -26,8 +26,12 @@ public abstract class Expression {
 		return name;
 	}
 	
+	public LogicalForm getForm() {
+		return lf;
+	}
+	
 	@Override
 	public String toString() {
-		return this.name;
+		return name;
 	}
 }

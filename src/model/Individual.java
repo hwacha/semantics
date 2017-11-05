@@ -17,6 +17,11 @@ public class Individual implements SemanticValue {
 	}
 	
 	@Override
+	public int hashCode() {
+		return id;
+	}
+	
+	@Override
 	public String toString() {
 		if (this.name == null) {
 			return "[" + id + "]";
@@ -32,6 +37,11 @@ public class Individual implements SemanticValue {
 	
 	@Override
 	public boolean equals(Object o) {
-		return (o instanceof Individual) && (((Individual) o).getID() == this.id);
+		return (o instanceof Individual) && (((Individual) o).id == this.id);
+	}
+
+	@Override
+	public boolean update(SemanticValue that) {
+		return false;
 	}
 }

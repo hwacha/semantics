@@ -1,6 +1,7 @@
 package model;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import syntax.Expression;
 
@@ -12,6 +13,10 @@ public class Function implements SemanticValue {
 	public Function(int id) {
 		this.id = id;
 		this.map = new HashMap<SemanticValue, SemanticValue>();
+	}
+	
+	public Function() {
+		this(-1);
 	}
 	
 	public boolean set(SemanticValue input, SemanticValue output) {
@@ -68,5 +73,26 @@ public class Function implements SemanticValue {
 	@Override
 	public void setName(Expression expression) {
 		this.name = expression;
+	}
+
+	@Override
+	public boolean update(SemanticValue that) {
+		if (!(that instanceof Function)) {
+			return false;
+		}
+		Function other = (Function) that;
+		
+		boolean hasUpdated = false;
+		
+		for (Entry<SemanticValue, SemanticValue> x: other.map.entrySet()) {
+			if (this.map.containsKey(x.getKey())) {
+				hasUpdated = this.map.get(x.getKey()).update(x.getValue()) || hasUpdated;
+			} else {
+				this.map.put(x.getKey(), x.getValue());
+				hasUpdated = true;
+			}
+		}
+		
+		return hasUpdated;
 	}
 }

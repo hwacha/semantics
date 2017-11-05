@@ -76,5 +76,31 @@ public class TruthValue implements SemanticValue {
 	public void setName(Expression expression) {
 		return; // Don't do anything
 	}
+
+	@Override
+	public boolean update(SemanticValue that) {
+		if (!(that instanceof TruthValue)) {
+			return false;
+		}
+		TruthValue other = (TruthValue) that;
+		if (other.isTrue()) {
+			return this.add(true);
+		}
+		if (other.isFalse()) {
+			return this.add(false);
+		}
+		if (other.isUnknown()) {
+			return false;
+		}
+		if (other.isBoth()) {
+			if (this.isTrue && this.isFalse) {
+				return false;
+			}
+			this.isTrue = true;
+			this.isFalse = true;
+			return true;
+		}
+		return false;
+	}
 	
 }

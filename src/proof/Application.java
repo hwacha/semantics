@@ -3,6 +3,7 @@ package proof;
 import java.util.HashSet;
 import java.util.Set;
 
+import model.Function;
 import model.Model;
 import model.SemanticValue;
 
@@ -51,8 +52,8 @@ public class Application implements LogicalForm {
 				return this.reduce().denotation(m);
 			}
 			SemanticValue d = f.denotation(m);
-			if (d instanceof model.Function) {
-				return ((model.Function) d).apply(x.denotation(m));
+			if (d instanceof Function) {
+				return ((Function) d).apply(x.denotation(m));
 			} else return null;
 		}
 	}
