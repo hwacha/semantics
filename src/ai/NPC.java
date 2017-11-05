@@ -46,18 +46,26 @@ public class NPC {
 		return false;
 	}
 	
-	private void question(BufferedReader r, String question, Expression[] options, String[] responses) throws InterruptedException, IOException {
-		assert(options.length == responses.length);
-		System.out.println(name + ": " + question);
+	private void prompt(BufferedReader r, Message m) throws InterruptedException, IOException {
+		System.out.println(name + ": " + m);
 		Thread.sleep(1500);
 		
+		if (!(m instanceof Prompt)) {
+			return;
+		}
+		Prompt p = (Prompt) m;
+		
 		boolean isDefault = true;
+		
+		Expression[] options = p.getOptions();
+		Message[] responses = p.getResponses();
 		
 		for (int i = 0; i < options.length - 1; i++) {
 			if (pollOption(r, options[i].toString())) {
 				this.model.update(options[i].getForm());
 				this.model.update();
-				System.out.println(responses[i]);
+				prompt(r, responses[i]);
+				// System.out.println(responses[i]);
 				isDefault = false;
 				break;
 			}
@@ -81,14 +89,14 @@ public class NPC {
 		// a trivially true sentence that is a placeholder for actual name stuff
 		LogicalForm ta = new Verum();
 		
-//		question(r, "What's your name?", new Expression[]{
-//				new Word("Bill", new S(), ta),
-//				new Word("Mike", new S(), ta),
-//				new Word("Dan", new S(), ta)},
-//				new String[]{
-//					"Bill is a nice name.",
-//					"Mike is a shitty name.",
-//					"Dan is a generic name."});
+		prompt(r, new Prompt("What's your name?", new Expression[]{
+				new Word("Bill", new S(), ta),
+				new Word("Mike", new S(), ta),
+				new Word("Dan", new S(), ta)},
+				new Message[]{
+					new Message("Bill is a nice name."),
+					new Message("Mike is a shitty name."),
+					new Message("Dan is a generic name.")}));
 		
 		// the player was born in x.
 		LogicalForm playerWasBornIn = new Application(new Constant(new Arrow(new E(), eToT), 12), new Constant(new E(), 123));
@@ -103,8 +111,12 @@ public class NPC {
 		//TODO change so that you only need the NPs instead of whole sentence:
 		// give template combining question and response.
 		
-		question(r, "Where are you from?", new Expression[]{e, n, p , f},
-				new String[]{"Elmira sounds awful.", "New York is all right.", "Paris sucks.", "Oh."});
+		prompt(r, new Prompt("Where are you from?", new Expression[]{e, n, p , f},
+				new Message[]{
+						new Message("Elmira sounds awful."),
+						new Message("New York is all right."),
+						new Message("Paris sucks."),
+						new Message("Oh.")}));
 
 		// System.out.println("I don't want to be rude or anything, but I'm kind of bored right now. Catch you later!");
 		System.out.println("END OF CONVERSATION\n");
