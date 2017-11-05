@@ -94,7 +94,8 @@ public class NPC {
 				new Word("Mike", new S(), ta),
 				new Word("Dan", new S(), ta)},
 				new Message[]{
-					new Message("Bill is a nice name."),
+					new Prompt("Are YOU Bill Gates?", new Expression[] {new Word("yes", new S(), ta), new Word("no", new S(), ta)},
+							new Message[] {new Message("Give me money."), new Message("That's too bad.")}),
 					new Message("Mike is a shitty name."),
 					new Message("Dan is a generic name.")}));
 		
