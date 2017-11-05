@@ -7,7 +7,7 @@ import model.Function;
 import model.Model;
 import model.SemanticValue;
 
-public class Application implements LogicalForm {
+public class Application implements LogicalForm { //comment test
 	private LogicalForm f;
 	private LogicalForm x;
 	private SemanticType type;
