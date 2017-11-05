@@ -16,7 +16,7 @@ public class Testing {
 		Individual mike = new Individual(5);
 		Individual dan = new Individual(20);
 		Individual player = new Individual(123);
-		
+//		
 		Word billName = new Word("Bill", new NP(), 4);
 		Word mikeName = new Word("Mike", new NP(), 5);
 		Word danName = new Word("Dan", new NP(), 20);
@@ -37,6 +37,7 @@ public class Testing {
 		Function isPlace = new Function(10);
 		isPlace.set(bill, new TruthValue(false));
 		isPlace.set(mike, new TruthValue(false));
+		isPlace.set(dan, new TruthValue(false));
 		isPlace.set(player, new TruthValue(false));
 		isPlace.set(e, new TruthValue(true));
 		isPlace.set(n, new TruthValue(true));
@@ -84,34 +85,35 @@ public class Testing {
 		Function mikeWasBornIn = new Function();
 		Function danWasBornIn = new Function();
 		Function playerWasBornIn = new Function();
-		
+//		
 		billWasBornIn.set(e, new TruthValue(true));
 		billWasBornIn.set(n, new TruthValue());
 		billWasBornIn.set(p, new TruthValue());
 		billWasBornIn.set(f, new TruthValue());
-		
+//		
 		mikeWasBornIn.set(e, new TruthValue());
 		mikeWasBornIn.set(n, new TruthValue());
 		mikeWasBornIn.set(p, new TruthValue(true));
 		mikeWasBornIn.set(f, new TruthValue());
-		
+//		
 		danWasBornIn.set(e, new TruthValue());
 		danWasBornIn.set(n, new TruthValue());
 		danWasBornIn.set(p, new TruthValue(true));
 		danWasBornIn.set(f, new TruthValue());
-		
+//		
 		playerWasBornIn.set(e, new TruthValue());
 		playerWasBornIn.set(n, new TruthValue());
 		playerWasBornIn.set(p, new TruthValue());
 		playerWasBornIn.set(f, new TruthValue());
-		
+//		
 		bornin.set(bill, billWasBornIn);
 		bornin.set(mike, mikeWasBornIn);
 		bornin.set(dan, danWasBornIn);
 		bornin.set(player, playerWasBornIn);
 		
 		Model m = new Model();
-		m.add(bill, mike, e, n, p, f, isPlace, contains, bornin);
+//		m.add(e, n, p, f, isPlace, contains);
+		m.add(bill, mike, dan, player, e, n, p, f, isPlace, contains, bornin);
 		m.addName(4, billName);
 		m.addName(5, mikeName);
 		m.addName(20, danName);
@@ -128,18 +130,19 @@ public class Testing {
 		Constant fRef = new Constant(new E(), 9);
 		Constant placeRef = new Constant(new Arrow(new E(), new T()), 10);
 		Constant containsRef = new Constant(new Arrow(new E(), new Arrow(new E(), new T())), 11);
+		Constant bornRef = new Constant(new Arrow(new E(), new Arrow(new E(), new T())), 12);
 		
 		// Elmira is a place.
 		Application eIsPlace = new Application(placeRef, eRef);
 		// Bill is a place.
 		Application billIsPlace = new Application(placeRef, new Constant(new E(), 4));
-		
+
 		// New York contains Elmira.
 		Application nContainsE = new Application(new Application(containsRef, nRef), eRef);
-		
+
 		// Paris contains France
 		Application fContainsP = new Application(new Application(containsRef, fRef), pRef);
-		
+
 		// New York does not contain France, vice versa
 		Not notNContainsF = new Not(new Application(new Application(containsRef, nRef), fRef));
 		Not notFContainsN = new Not(new Application(new Application(containsRef, fRef), nRef));
@@ -151,10 +154,10 @@ public class Testing {
 		
 		// System.out.println("New York contains Elmira. => " + m.satisfies(nContainsE));
 		// System.out.println(contains);
-		// System.out.println("updating..." + m.update(nContainsE));
-		// System.out.println("updating..." + m.update(fContainsP));
-		// System.out.println("updating..." + m.update(notNContainsF));
-		// System.out.println("updating..." + m.update(notFContainsN));
+		m.update(nContainsE);
+		m.update(fContainsP);
+		m.update(notNContainsF);
+		m.update(notFContainsN);
 		// System.out.println("New York contains Elmira. => " + m.satisfies(nContainsE));
 		
 		// System.out.println(nContainsE);
@@ -211,7 +214,7 @@ public class Testing {
 		// System.out.println("model updating exclusive: " + m.update(exclusive));
 		// System.out.println(m.get(11));
 		
-		Constant bornRef = new Constant(new Arrow(new E(), new Arrow (new E(), new T())), 12);
+		// Constant bornRef = new Constant(new Arrow(new E(), new Arrow (new E(), new T())), 12);
 		
 		// positive born-in rule
 		Rule bornEntail = new Rule();
@@ -222,6 +225,7 @@ public class Testing {
 		bornEntail.addTop(b2);
 		bornEntail.addBottom(b3);
 		
+		// negative born-in rule
 		Rule bornReject = new Rule();
 		LogicalForm r1 = b1;
 		LogicalForm r2 = new Application(new Application(bornRef, iv), v3);
@@ -232,34 +236,84 @@ public class Testing {
 		bornReject.addBottom(r3);
 		bornReject.addBottom(r4);
 		
-		// m.update(bornEntail);
-		// m.update(bornReject);
+		m.update(bornEntail);
+		m.update(bornReject);
 		
 		m.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
 		m.update();
 		
 		// m.update(new Application(new Application(bornRef, new Constant(new E(), 4)), new Constant(new E(), 9)));
 		m.setNames();
-		// System.out.println(m.get(11));
 		// System.out.println(m.get(12));
+		
+		// System.out.println(((Function) ((Function) m.get(11)).apply(new Individual(6))).apply(new Individual(6)));
+		//System.out.println(m.get(12));
 		
 		// Phrase phr = new Phrase(billName, isPlaceName);
 		// System.out.println(phr + " => " + phr.meaning(m));
 		
+		Model barrysModel = new Model();
+		barrysModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+		barrysModel.update(m);
+		NPC barry = new NPC("Barry the Bartender", barrysModel);
+		
 		Model pollysModel = new Model();
 		pollysModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
 		pollysModel.update(m);
+		NPC polly = new NPC("Polly the Patron", pollysModel);
 		
-		NPC polly = new NPC(pollysModel);
+		Model petesModel = new Model();
+		petesModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+		petesModel.update(m);
+		NPC pete = new NPC("Pete the Patron", petesModel);
+		
+		Model rossModel = new Model();
+		rossModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+		rossModel.update(m);
+		NPC ross = new NPC("Ross the Boss", petesModel);
+		
+		Network net = new Network(barry, polly, pete, ross);
+		net.addConnection(polly, ross);
+		net.addConnection(pete, ross);
+		
+		try {
+			barry.talkWithPlayer();
+		} catch (IOException | InterruptedException e5) {
+			e5.printStackTrace();
+		}
+		net.update(barry);
+		
 		try {
 			polly.talkWithPlayer();
 		} catch (IOException | InterruptedException e5) {
 			e5.printStackTrace();
 		}
+		net.update(polly);
 		
-		// System.out.println(((Function) m.get(12)).apply(new Individual(123)));
+		try {
+			pete.talkWithPlayer();
+		} catch (IOException | InterruptedException e5) {
+			e5.printStackTrace();
+		}
+		net.update(pete);
+		
+		System.out.print("Ross the boss: ");
+		if (ross.getModel().hasInconsistency()) {
+			System.out.println("You lied. So you died.");
+		} else {
+			System.out.println("You're a straight shooter. You live another day.");
+		}
+		
+//		try {
+//			ross.talkWithPlayer();
+//		} catch (IOException | InterruptedException e5) {
+//			e5.printStackTrace();
+//		}
+//		net.update(ross);
+		
+		// System.out.println(((Function) m.get(12)).apply(new Individual(4)));
 		// System.out.println(mo.get(new Individual(123)));
-		System.out.println(polly.getModel().get(12));
+		// System.out.println(polly.getModel().get(12));
 		
 	}
 }

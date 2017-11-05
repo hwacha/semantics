@@ -8,4 +8,6 @@ public interface SemanticValue {
 	public void setName(Expression expression);
 	
 	public boolean update(SemanticValue that);
+	
+	public SemanticValue sClone();
 }

@@ -103,4 +103,9 @@ public class TruthValue implements SemanticValue {
 		return false;
 	}
 	
+	public SemanticValue sClone() {
+		return new TruthValue(isTrue, isFalse);
+		
+	}
+	
 }

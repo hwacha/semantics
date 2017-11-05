@@ -10,6 +10,7 @@ import proof.*;
 import syntax.Expression;
 
 public class Model {
+	public static int ID_COUNT = -1;
 	private HashMap<Integer, Expression> names = new HashMap<Integer, Expression>();
 	private HashMap<Integer, SemanticValue> model = new HashMap<Integer, SemanticValue>();
 	// to speed things up, change from a map to semantic values to rules
@@ -79,7 +80,7 @@ public class Model {
 			if (this.model.containsKey(x.getKey())) {
 				hasUpdated = this.model.get(x.getKey()).update(x.getValue()) || hasUpdated;
 			} else {
-				this.model.put(x.getKey(), x.getValue());
+				this.model.put(x.getKey(), x.getValue().sClone());
 				hasUpdated = true;
 			}
 		}
@@ -157,5 +158,30 @@ public class Model {
 				model.get(id).setName(names.get(id));
 			}
 		}
+	}
+	
+	private boolean inconsistencyHelper(SemanticValue v) {
+		if (v instanceof TruthValue) {
+			if (((TruthValue) v).isBoth()) {
+				return true;
+			}
+		}
+		if (v instanceof Function) {
+			for (SemanticValue x : ((Function) v).codomain()) {
+				if (inconsistencyHelper(x)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasInconsistency() {
+		for (SemanticValue v : model.values()) {
+			if (inconsistencyHelper(v)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

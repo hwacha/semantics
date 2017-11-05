@@ -1,9 +1,13 @@
 package model;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import proof.Verum;
 import syntax.Expression;
+import syntax.S;
 
 public class Function implements SemanticValue {
 	private int id;
@@ -31,6 +35,14 @@ public class Function implements SemanticValue {
 	@Override
 	public int getID() {
 		return id;
+	}
+	
+	public Set<SemanticValue> domain() {
+		return map.keySet();
+	}
+	
+	public Collection<SemanticValue> codomain() {
+		return map.values();
 	}
 	
 	private String toString(int depth) {
@@ -94,5 +106,15 @@ public class Function implements SemanticValue {
 		}
 		
 		return hasUpdated;
+	}
+
+	@Override
+	public SemanticValue sClone() {
+		Function f = new Function(id);
+		f.setName(name);
+		for (Entry<SemanticValue, SemanticValue> x : map.entrySet()) {
+			f.set(x.getKey().sClone(), x.getValue().sClone());
+		}
+		return f;
 	}
 }

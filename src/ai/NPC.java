@@ -9,9 +9,11 @@ import proof.*;
 import syntax.*;
 
 public class NPC {
+	private String name;
 	private Model model;
 	
-	public NPC(Model model) {
+	public NPC(String name, Model model) {
+		this.name = name;
 		this.model = model;
 	}
 	
@@ -46,16 +48,15 @@ public class NPC {
 	
 	private void question(BufferedReader r, String question, Expression[] options, String[] responses) throws InterruptedException, IOException {
 		assert(options.length == responses.length);
-		
-		System.out.println(question);
+		System.out.println(name + ": " + question);
 		Thread.sleep(1500);
 		
 		boolean isDefault = true;
 		
 		for (int i = 0; i < options.length - 1; i++) {
 			if (pollOption(r, options[i].toString())) {
-				System.out.println(this.model.update(options[i].getForm()));
-				// this.model.update();
+				this.model.update(options[i].getForm());
+				this.model.update();
 				System.out.println(responses[i]);
 				isDefault = false;
 				break;
@@ -64,6 +65,8 @@ public class NPC {
 		
 		if (isDefault) {
 			System.out.println(options[options.length - 1]);
+			this.model.update(options[options.length - 1].getForm());
+			this.model.update();
 			System.out.println(responses[options.length - 1]);
 		}
 		
@@ -73,22 +76,19 @@ public class NPC {
 	public void talkWithPlayer() throws IOException, InterruptedException, InvalidTypeException {
 		BufferedReader r  = new BufferedReader(new InputStreamReader(System.in));
 		
-		//TODO get rid of this
-		int playerID = 123;
-		
 		SemanticType eToT = new Arrow(new E(), new T());
 		
 		// a trivially true sentence that is a placeholder for actual name stuff
-		LogicalForm ta = new Application(new Constant(eToT, 10), new Constant(new E(), 6));
+		LogicalForm ta = new Verum();
 		
-		question(r, "What's your name?", new Expression[]{
-				new Word("Bill", new S(), ta),
-				new Word("Mike", new S(), ta),
-				new Word("Dan", new S(), ta)},
-				new String[]{
-					"Bill is a nice name.",
-					"Mike is a shitty name.",
-					"Dan is a generic name."});
+//		question(r, "What's your name?", new Expression[]{
+//				new Word("Bill", new S(), ta),
+//				new Word("Mike", new S(), ta),
+//				new Word("Dan", new S(), ta)},
+//				new String[]{
+//					"Bill is a nice name.",
+//					"Mike is a shitty name.",
+//					"Dan is a generic name."});
 		
 		// the player was born in x.
 		LogicalForm playerWasBornIn = new Application(new Constant(new Arrow(new E(), eToT), 12), new Constant(new E(), 123));
@@ -100,13 +100,14 @@ public class NPC {
 		Expression f = new Word("France.", new S(), new Application(playerWasBornIn, new Constant(new E(), 9)));
 		
 		
-		//TODO change so tht you only need the NPs instaead of whole sentence:
+		//TODO change so that you only need the NPs instead of whole sentence:
 		// give template combining question and response.
 		
 		question(r, "Where are you from?", new Expression[]{e, n, p , f},
 				new String[]{"Elmira sounds awful.", "New York is all right.", "Paris sucks.", "Oh."});
 
-		System.out.println("I don't want to be rude or anything, but I'm kind of bored right now. Catch you later!");
+		// System.out.println("I don't want to be rude or anything, but I'm kind of bored right now. Catch you later!");
+		System.out.println("END OF CONVERSATION\n");
 	}
 	
 	public static void main(String[] args) {

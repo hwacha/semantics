@@ -44,4 +44,9 @@ public class Individual implements SemanticValue {
 	public boolean update(SemanticValue that) {
 		return false;
 	}
+
+	@Override
+	public SemanticValue sClone() {
+		return new Individual(id);
+	}
 }
