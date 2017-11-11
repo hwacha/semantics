@@ -11,10 +11,12 @@ import syntax.*;
 public class NPC {
 	private String name;
 	private Model model;
+	private Message[] conversation;
 	
-	public NPC(String name, Model model) {
+	public NPC(String name, Model model, Message[] conversation) {
 		this.name = name;
 		this.model = model;
+		this.conversation = conversation;
 	}
 	
 	public Model getModel() {
@@ -84,43 +86,12 @@ public class NPC {
 	public void talkWithPlayer() throws IOException, InterruptedException, InvalidTypeException {
 		BufferedReader r  = new BufferedReader(new InputStreamReader(System.in));
 		
-		SemanticType eToT = new Arrow(new E(), new T());
-		
-		// a trivially true sentence that is a placeholder for actual name stuff
-		LogicalForm ta = new Verum();
-		
-		prompt(r, new Prompt("What's your name?", new Expression[]{
-				new Word("Bill", new S(), ta),
-				new Word("Mike", new S(), ta),
-				new Word("Dan", new S(), ta)},
-				new Message[]{
-					new Prompt("Are YOU Bill Gates?", new Expression[] {new Word("yes", new S(), ta), new Word("no", new S(), ta)},
-							new Message[] {new Message("Give me money."), new Message("That's too bad.")}),
-					new Message("Mike is a shitty name."),
-					new Message("Dan is a generic name.")}));
-		
-		// the player was born in x.
-		LogicalForm playerWasBornIn = new Application(new Constant(new Arrow(new E(), eToT), 12), new Constant(new E(), 123));
-		
-		// the player was born in elmira.
-		Expression e = new Word("Elmira.", new S(), new Application(playerWasBornIn, new Constant(new E(), 6)));
-		Expression n = new Word("New York.", new S(), new Application(playerWasBornIn, new Constant(new E(), 7)));
-		Expression p = new Word("Paris.", new S(), new Application(playerWasBornIn, new Constant(new E(), 8)));
-		Expression f = new Word("France.", new S(), new Application(playerWasBornIn, new Constant(new E(), 9)));
-		
-		
-		//TODO change so that you only need the NPs instead of whole sentence:
-		// give template combining question and response.
-		
-		prompt(r, new Prompt("Where are you from?", new Expression[]{e, n, p , f},
-				new Message[]{
-						new Message("Elmira sounds awful."),
-						new Message("New York is all right."),
-						new Message("Paris sucks."),
-						new Message("Oh.")}));
-
-		// System.out.println("I don't want to be rude or anything, but I'm kind of bored right now. Catch you later!");
-		System.out.println("END OF CONVERSATION\n");
+		for (Message m : conversation) {
+			if (m.meetsConditions(this.model)) {
+				prompt(r, m);
+			}
+		}
+		System.out.println();
 	}
 	
 	public static void main(String[] args) {
@@ -130,5 +101,12 @@ public class NPC {
 //		} catch (IOException | InterruptedException | InvalidTypeException e) {
 //			e.printStackTrace();
 //		}
+		
+		char[] cs = "the quick brown fox jumped over the lazy gray dog.".toCharArray();
+		
+		for (int i = 0; i < cs.length; i++) {
+			cs[i] = (char) (((int)cs[i]) + 1);
+		}
+		System.out.println(new String(cs));
 	}
 }
