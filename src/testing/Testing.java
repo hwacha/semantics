@@ -335,9 +335,9 @@ public class Testing {
 		
 		Message m1 = new Message("END OF CONVERSATION");
 		
-		Message[] barrysConvo = new Message[]{barrysIntro, barryPrompt, p1, p11, m1};
-		Message[] pollysConvo = new Message[]{pollysIntro, p1, p11, m1};
-		Message[] petesConvo = new Message[]{petesIntro, p1, p11, m1};
+		Message[] barrysConvo = new Message[]{barrysIntro, barryPrompt, /* p1 , */ p11, m1};
+		Message[] pollysConvo = new Message[]{pollysIntro, p1, /* p1 , */ m1};
+		Message[] petesConvo = new Message[]{petesIntro, p1, /* p1 , */ m1};
 		Message[] rossConvo = new Message[]{rossIntro, rossGiveKey, rossDenyKey};
 		
 		Model barrysModel = new Model();
