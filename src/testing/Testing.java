@@ -262,11 +262,20 @@ public class Testing {
 				new Word("Bill", new S(), ta),
 				new Word("Mike", new S(), ta),
 				new Word("Dan", new S(), ta)},
-				new Message[]{
-					new Prompt("Like...Bill Gates?", new Expression[] {new Word("yes", new S(), ta), new Word("no", new S(), ta)},
-							new Message[] {new Message("Give me money."), new Message("That's too bad.")}),
-					new Message("Mike is a shitty name."),
-					new Message("Dan is a generic name.")});
+				new Message[][]{
+					new Message[]{
+							new Prompt("Like...Bill Gates?",
+									new Expression[] {
+											new Word("yes", new S(), ta),
+											new Word("no", new S(), ta)
+									},
+									new Message[][] { 
+										new Message[]{new Message("Give me money.")},
+										new Message[]{new Message("That's too bad.")}
+									})
+					},
+					new Message[]{new Message("Mike is a shitty name.")},
+					new Message[]{new Message("Dan is a generic name.")}});
 		
 		// the player was born in x.
 		LogicalForm playerWasBornIn2 = new Application(new Constant(new Arrow(new E(), eToT), 12), new Constant(new E(), 123));
@@ -282,9 +291,12 @@ public class Testing {
 		// give template combining question and response.
 		
 		Prompt barrysIntro = new Prompt("What can I make you?",
-				new Expression[]{new Word("Blood Slurp.", new S(), ta), new Word("Orange Juice", new S(), ta)},
-				new Message[]{new Message("Blood slurp, coming right up."),
-							  new Message("That's too hard to come by; can't pass customs.")});
+				new Expression[]{new Word("Blood Slurp.", new S(), ta),
+								 new Word("Blood Pop.", new S(), ta),
+								 new Word("Orange Juice", new S(), ta)},
+				new Message[][]{new Message[]{new Message("Blood slurp, coming right up.")},
+							    new Message[]{new Message("Blood pop? Bold choice.")},
+							    new Message[]{new Message("That's too hard to come by; can't pass customs.")}});
 		
 		Message barryExp1 = new Message("Here's what you need to know about this shindig...");
 		Message barryExp2 = new Message("I don't talk to anyone here...");
@@ -293,6 +305,13 @@ public class Testing {
 		Message barryExp5 = new Message("He only likes New Yorkers...");
 		Message barryExp6 = new Message("So if you want to get on his good side, you better be from the Empire State.\n");
 		
+		Message barryPrompt = new Prompt("Let me know if you need anything else.",
+				new Expression[]{
+					new Word("Can you give me the low-down on the scene here?", new S(), ta),
+					new Word("That's all, thanks!", new S(), ta)},
+				new Message[][]{new Message[]{
+						barryExp1, barryExp2, barryExp3,
+						barryExp4, barryExp5, barryExp6}, new Message[]{new Message("Any time!")}});
 		
 		Message pollysIntro = new Message("Hello! I'm polly! I like crackers!");
 		Message petesIntro = new Message("How do you do? I'm Pete, a patronizing patron.");
@@ -308,15 +327,15 @@ public class Testing {
 				new LogicalForm[]{playerNotFromNewYork});
 		
 		Prompt p11 = new Prompt("Where are you from?", new Expression[]{e6, n2, p2 , f2},
-				new Message[]{
-						new Message("Elmira sounds awful."),
-						new Message("New York is all right."),
-						new Message("Paris sucks."),
-						new Message("Oh.")});
+				new Message[][]{
+						new Message[]{new Message("Elmira sounds awful.")},
+						new Message[]{new Message("New York is all right.")},
+						new Message[]{new Message("Paris sucks.")},
+						new Message[]{new Message("Oh.")}});
 		
 		Message m1 = new Message("END OF CONVERSATION");
 		
-		Message[] barrysConvo = new Message[]{barrysIntro, barryExp1, barryExp2, barryExp3, barryExp4, barryExp5, barryExp6, p1, p11, m1};
+		Message[] barrysConvo = new Message[]{barrysIntro, barryPrompt, p1, p11, m1};
 		Message[] pollysConvo = new Message[]{pollysIntro, p1, p11, m1};
 		Message[] petesConvo = new Message[]{petesIntro, p1, p11, m1};
 		Message[] rossConvo = new Message[]{rossIntro, rossGiveKey, rossDenyKey};

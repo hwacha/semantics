@@ -60,13 +60,17 @@ public class NPC {
 		boolean isDefault = true;
 		
 		Expression[] options = p.getOptions();
-		Message[] responses = p.getResponses();
+		Message[][] responses = p.getResponses();
 		
 		for (int i = 0; i < options.length - 1; i++) {
 			if (pollOption(r, options[i].toString())) {
 				this.model.update(options[i].getForm());
 				this.model.update();
-				prompt(r, responses[i]);
+				for (Message q : responses[i]) {
+					if (q.meetsConditions(this.model)) {
+						prompt(r, q);
+					}
+				}
 				// System.out.println(responses[i]);
 				isDefault = false;
 				break;
@@ -77,7 +81,12 @@ public class NPC {
 			System.out.println(options[options.length - 1]);
 			this.model.update(options[options.length - 1].getForm());
 			this.model.update();
-			System.out.println(responses[options.length - 1]);
+			for (Message q : responses[options.length - 1]) {
+				if (q.meetsConditions(this.model)) {
+					System.out.println(q);
+					Thread.sleep(1500);
+				}
+			}
 		}
 		
 		System.out.println();
