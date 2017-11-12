@@ -303,7 +303,7 @@ public class Testing {
 		Message barryExp3 = new Message("And Pete and Polly hate each other...");
 		Message barryExp4 = new Message("But they both report to Ross the Boss.");
 		Message barryExp5 = new Message("He only likes New Yorkers...");
-		Message barryExp6 = new Message("So if you want to get on his good side, you better be from the Empire State.\n");
+		Message barryExp6 = new Message("So if you want to get on his good side, you better be from the Empire State.");
 		
 		Message barryPrompt = new Prompt("Let me know if you need anything else.",
 				new Expression[]{
@@ -335,9 +335,9 @@ public class Testing {
 		
 		Message m1 = new Message("END OF CONVERSATION");
 		
-		Message[] barrysConvo = new Message[]{barrysIntro, barryPrompt, /* p1 , */ p11, m1};
-		Message[] pollysConvo = new Message[]{pollysIntro, p1, /* p1 , */ m1};
-		Message[] petesConvo = new Message[]{petesIntro, p1, /* p1 , */ m1};
+		Message[] barrysConvo = new Message[]{barrysIntro, barryPrompt, p11, m1};
+		Message[] pollysConvo = new Message[]{pollysIntro, p11 , m1};
+		Message[] petesConvo = new Message[]{petesIntro, p11, m1};
 		Message[] rossConvo = new Message[]{rossIntro, rossGiveKey, rossDenyKey};
 		
 		Model barrysModel = new Model();

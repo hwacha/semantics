@@ -32,17 +32,52 @@ public class NPC {
 	}
 	
 	private boolean pollOption(BufferedReader r, String option) throws InterruptedException, IOException {
-		System.out.print(option);
-		Thread.sleep(1500);
-		
-		if (r.ready()) {
+		// clear input stream.
+		while (r.ready()) {
 			r.readLine();
-			return true; 
 		}
 		
-		String bs = constant('\b', option);
+		// print the available option.
+		System.out.print(option);
+		
+		Thread.sleep(500);
+		// if input happen with current option.
+		if (r.ready()) {
+			System.out.println("You: " + option);
+			return true;
+		}
+		
+		System.out.print(" .");
+		Thread.sleep(500);
+		if (r.ready()) {
+			System.out.println("You: " + option);
+			return true;
+		}
+		
+		System.out.print(".");
+		Thread.sleep(500);
+		if (r.ready()) {
+			System.out.println("You: " + option);
+			return true;
+		}
+		
+		System.out.print(".");
+		if (r.ready()) {
+			System.out.println("You: " + option);
+			return true;
+		}
+		
+		Thread.sleep(500);
+		
+		// if input happen with current option.
+		if (r.ready()) {
+			System.out.println("You: " + option);
+			return true;
+		}
+		
+		String bs = constant('\b', option + " ...");
 		System.out.print(bs);
-		System.out.print(constant(' ', option));
+		System.out.print(constant(' ', option + " ..."));
 		System.out.print(bs);
 		
 		return false;
@@ -78,7 +113,43 @@ public class NPC {
 		}
 		
 		if (isDefault) {
-			System.out.println(options[options.length - 1]);
+			System.out.print(options[options.length - 1] + " (Default)");
+			
+			do {
+			
+				Thread.sleep(500);
+				if (r.ready()) {
+					while(r.ready()) {
+						r.readLine();
+					}
+					break;
+				}
+				System.out.print(" .");
+				
+				Thread.sleep(500);
+				if (r.ready()) {
+					while(r.ready()) {
+						r.readLine();
+					}
+					break;
+				}
+				System.out.print(".");
+				
+				Thread.sleep(500);
+				
+				if (r.ready()) {
+					while(r.ready()) {
+						r.readLine();
+					}
+					break;
+				}
+				System.out.print(".");
+				
+				Thread.sleep(500);
+				System.out.println();
+			} while (false);
+			
+			System.out.println("You: " + options[options.length - 1]);
 			this.model.update(options[options.length - 1].getForm());
 			this.model.update();
 			for (Message q : responses[options.length - 1]) {
@@ -111,11 +182,11 @@ public class NPC {
 //			e.printStackTrace();
 //		}
 		
-		char[] cs = "the quick brown fox jumped over the lazy gray dog.".toCharArray();
-		
-		for (int i = 0; i < cs.length; i++) {
-			cs[i] = (char) (((int)cs[i]) + 1);
-		}
-		System.out.println(new String(cs));
+//		char[] cs = "the quick brown fox jumped over the lazy gray dog.".toCharArray();
+//		
+//		for (int i = 0; i < cs.length; i++) {
+//			cs[i] = (char) (((int)cs[i]) + 1);
+//		}
+//		System.out.println(new String(cs));
 	}
 }
