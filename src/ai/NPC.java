@@ -3,6 +3,8 @@ package ai;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import model.*;
 import proof.*;
@@ -11,16 +13,33 @@ import syntax.*;
 public class NPC {
 	private String name;
 	private Model model;
+	private LinkedList<Action> goals;
 	private Message[] conversation;
 	
-	public NPC(String name, Model model, Message[] conversation) {
+	public NPC(String name, Model model, Action[] goals, Message[] conversation) {
 		this.name = name;
 		this.model = model;
 		this.conversation = conversation;
+		
+		this.goals = new LinkedList<Action>();
+		
+		if (goals != null) {
+			for (Action a : goals) {
+				this.goals.add(a);
+			}
+		}
+	}
+	
+	public NPC(String name, Model model, Message[] conversation) {
+		this(name, model, null, conversation);
 	}
 	
 	public Model getModel() {
 		return model;
+	}
+	
+	public void addAction(Action a) {
+		this.goals.add(a);
 	}
 	
 	private String constant(char c, String s) {
