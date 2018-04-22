@@ -10,8 +10,8 @@ public class Testing {
 		Expression helps = new Word("helps", new Right(new Left(new S(), new NP()), new NP()), 2);
 		
 		// Expression billRuns = new Phrase(bill, runs);
-		Expression helpsBill = new Phrase(helps, bill);
-		Expression billHelpsBill = new Phrase(bill, helpsBill);
+		Expression helpsBill = new Phrase(helps, bill, new Honest());
+		Expression billHelpsBill = new Phrase(bill, helpsBill, new Honest());
 		
 		System.out.println(billHelpsBill);
 		System.out.println(billHelpsBill.getSyntacticCategory());

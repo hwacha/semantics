@@ -7,11 +7,17 @@ import proof.LogicalForm;
 public abstract class Expression {
 	protected SyntacticCategory cat;
 	protected String name;
+	protected SpeechAct actType;
 	
 	protected LogicalForm lf;
 	
-	public Expression(SyntacticCategory cat) {
+	public Expression(SyntacticCategory cat, SpeechAct actType) {
 		this.cat = cat;
+		this.actType = actType;
+	}
+	
+	public Expression(SyntacticCategory cat) {
+		this(cat, new Honest());
 	}
 	
 	public SemanticValue meaning(Model m) {
@@ -28,6 +34,10 @@ public abstract class Expression {
 	
 	public LogicalForm getForm() {
 		return lf;
+	}
+	
+	public String toStringWithType() {
+		return name + " [" + actType + "]";
 	}
 	
 	@Override

@@ -257,6 +257,7 @@ public class Testing {
 		
 		// a trivially true sentence that is a placeholder for actual name stuff
 		LogicalForm ta = new Verum();
+		S s = new S();
 		
 		Prompt p1 = new Prompt("What's your name?", new Expression[]{
 				new Word("Bill", new S(), ta),
@@ -290,111 +291,160 @@ public class Testing {
 		//TODO change so that you only need the NPs instead of whole sentence:
 		// give template combining question and response.
 		
-		Prompt barrysIntro = new Prompt("What can I make you?",
-				new Expression[]{new Word("Blood Slurp.", new S(), ta),
-								 new Word("Blood Pop.", new S(), ta),
-								 new Word("Orange Juice", new S(), ta)},
-				new Message[][]{new Message[]{new Message("Blood slurp, coming right up.")},
-							    new Message[]{new Message("Blood pop? Bold choice.")},
-							    new Message[]{new Message("That's too hard to come by; can't pass customs.")}});
+		Honest h = new Honest();
+		Lie l = new Lie();
+		Deflect d = new Deflect();
 		
-		Message barryExp1 = new Message("Here's what you need to know about this shindig...");
-		Message barryExp2 = new Message("I don't talk to anyone here...");
-		Message barryExp3 = new Message("And Pete and Polly hate each other...");
-		Message barryExp4 = new Message("But they both report to Ross the Boss.");
-		Message barryExp5 = new Message("He only likes New Yorkers...");
-		Message barryExp6 = new Message("So if you want to get on his good side, you better be from the Empire State.");
+		Message[] blank = {new Message("")};
 		
-		Message barryPrompt = new Prompt("Let me know if you need anything else.",
-				new Expression[]{
-					new Word("Can you give me the low-down on the scene here?", new S(), ta),
-					new Word("That's all, thanks!", new S(), ta)},
-				new Message[][]{new Message[]{
-						barryExp1, barryExp2, barryExp3,
-						barryExp4, barryExp5, barryExp6}, new Message[]{new Message("Any time!")}});
+		Prompt farloPopzRequest = new Prompt("Could you tell me where the Eyeball Popz are?",
+				new Expression[]{new Word("I'm new here. I'm not too sure.", h),
+								 new Word("Snacks on Aisle 2.", h),
+								 new Word("Right over there.", h), 
+								 new Word("Aisle 1.", l),
+								 new Word("We don't sell Eyeball Popz here.", l)},
+				new Message[][]{blank, blank,
+								new Message[]{
+										new Prompt("What? Where?",
+													new Expression[]{new Word("In... that general direction", h)},
+													new Message[][]{blank})},
+								blank,
+								{new Message("Oh, that's a bummer. I'll just look around then. Thanks!")}});
 		
-		Message pollysIntro = new Message("Hello! I'm polly! I like crackers!");
-		Message petesIntro = new Message("How do you do? I'm Pete, a patronizing patron.");
-		Message rossIntro = new Message("I'm Ross, the boss. How's this fine evenin' treatin' you?");
+		Prompt farloProbe = new Prompt("Never seen you before. When did you get here?",
+				new Expression[]{new Word("Very recently.", h),
+								 new Word("This week.", h),
+								 new Word("Yesterday.", h),
+								 new Word("Last month.", l),
+								 new Word("Long time ago, buddy.", l),
+								 new Word("Probably been here since you've been born.", l)},
+				new Message[][]{{farloPopzRequest}, {farloPopzRequest}, {farloPopzRequest}, {farloPopzRequest}, {farloPopzRequest},
+								{new Message("Wow, that's a long time. Never noticed you before!"), farloPopzRequest}});
 		
-		LogicalForm playerFromNewYork = new Application(playerWasBornIn2, new Constant(new E(), 7));
-		LogicalForm playerNotFromNewYork = new Not(playerFromNewYork);
+		Prompt farlosIntro = new Prompt("Ay. You're new here aren't you?",
+				new Expression[]{new Word("Yeah.", h),
+								 new Word("Mhm.", h),
+								 new Word("Yes I am. I'm also a human.", h),
+								 new Word("Nope.", l),
+								 new Word("Been here awhile now.", l),
+								 new Word("Who's askin'?", d),
+								 new Word("Can I help you?", d)},
+				new Message[][]{{farloProbe}, {farloProbe}, {farloProbe}, {farloProbe}, {farloProbe}, {farloPopzRequest}, {farloPopzRequest}});
 		
-		Message rossGiveKey = new Message("I like people from NEW YORK STATE. Here's the key to the door.",
-				new LogicalForm[]{playerFromNewYork});
+		Model farlosModel = new Model();
+		NPC farlo = new NPC("Farlo", farlosModel, new Message[]{farlosIntro});
 		
-		Message rossDenyKey = new Message("I see you're not from New York... No key for you.",
-				new LogicalForm[]{playerNotFromNewYork});
-		
-		Prompt p11 = new Prompt("Where are you from?", new Expression[]{e6, n2, p2 , f2},
-				new Message[][]{
-						new Message[]{new Message("Elmira sounds awful.")},
-						new Message[]{new Message("New York is all right.")},
-						new Message[]{new Message("Paris sucks.")},
-						new Message[]{new Message("Oh.")}});
-		
-		Message m1 = new Message("END OF CONVERSATION");
-		
-		Message[] barrysConvo = new Message[]{barrysIntro, barryPrompt, p11, m1};
-		Message[] pollysConvo = new Message[]{pollysIntro, p11 , m1};
-		Message[] petesConvo = new Message[]{petesIntro, p11, m1};
-		Message[] rossConvo = new Message[]{rossIntro, rossGiveKey, rossDenyKey};
-		
-		Model barrysModel = new Model();
-		barrysModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
-		barrysModel.update(m);
-		NPC barry = new NPC("Barry the Bartender", barrysModel, barrysConvo);
-		
-		Model pollysModel = new Model();
-		pollysModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
-		pollysModel.update(m);
-		NPC polly = new NPC("Polly the Patron", pollysModel, pollysConvo);
-		
-		Model petesModel = new Model();
-		petesModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
-		petesModel.update(m);
-		NPC pete = new NPC("Pete the Patron", petesModel, petesConvo);
-		
-		Model rossModel = new Model();
-		rossModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
-		rossModel.update(m);
-		NPC ross = new NPC("Ross the Boss", rossModel, rossConvo);
-		
-		Network net = new Network(barry, polly, pete, ross);
-		net.addConnection(polly, ross);
-		net.addConnection(pete, ross);
+//		Prompt barrysIntro = new Prompt("What can I make you?",
+//				new Expression[]{new Word("Blood Slurp.", s, ta),
+//								 new Word("Blood Pop.", s, ta),
+//								 new Word("Orange Juice", s, ta)},
+//				new Message[][]{new Message[]{new Message("Blood slurp, coming right up.")},
+//							    new Message[]{new Message("Blood pop? Bold choice.")},
+//							    new Message[]{new Message("That's too hard to come by; can't pass customs.")}});
+//		
+//		Message barryExp1 = new Message("Here's what you need to know about this shindig...");
+//		Message barryExp2 = new Message("I don't talk to anyone here...");
+//		Message barryExp3 = new Message("And Pete and Polly hate each other...");
+//		Message barryExp4 = new Message("But they both report to Ross the Boss.");
+//		Message barryExp5 = new Message("He only likes New Yorkers...");
+//		Message barryExp6 = new Message("So if you want to get on his good side, you better be from the Empire State.");
+//		
+//		Message barryPrompt = new Prompt("Let me know if you need anything else.",
+//				new Expression[]{
+//					new Word("Can you give me the low-down on the scene here?", new S(), ta),
+//					new Word("That's all, thanks!", s, ta)},
+//				new Message[][]{new Message[]{
+//						barryExp1, barryExp2, barryExp3,
+//						barryExp4, barryExp5, barryExp6}, new Message[]{new Message("Any time!")}});
+//		
+//		Message pollysIntro = new Message("Hello! I'm polly! I like crackers!");
+//		Message petesIntro = new Message("How do you do? I'm Pete, a patronizing patron.");
+//		Message rossIntro = new Message("I'm Ross, the boss. How's this fine evenin' treatin' you?");
+//		
+//		LogicalForm playerFromNewYork = new Application(playerWasBornIn2, new Constant(new E(), 7));
+//		LogicalForm playerNotFromNewYork = new Not(playerFromNewYork);
+//		
+//		Message rossGiveKey = new Message("I like people from NEW YORK STATE. Here's the key to the door.",
+//				new LogicalForm[]{playerFromNewYork});
+//		
+//		Message rossDenyKey = new Message("I see you're not from New York... No key for you.",
+//				new LogicalForm[]{playerNotFromNewYork});
+//		
+//		Prompt p11 = new Prompt("Where are you from?", new Expression[]{e6, n2, p2 , f2},
+//				new Message[][]{
+//						new Message[]{new Message("Elmira sounds awful.")},
+//						new Message[]{new Message("New York is all right.")},
+//						new Message[]{new Message("Paris sucks.")},
+//						new Message[]{new Message("Oh.")}});
+//		
+//		Message m1 = new Message("END OF CONVERSATION");
+//		
+//		Message[] barrysConvo = new Message[]{barrysIntro, barryPrompt, p11, m1};
+//		Message[] pollysConvo = new Message[]{pollysIntro, p11 , m1};
+//		Message[] petesConvo = new Message[]{petesIntro, p11, m1};
+//		Message[] rossConvo = new Message[]{rossIntro, rossGiveKey, rossDenyKey};
+//		
+//		Model barrysModel = new Model();
+//		barrysModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+//		barrysModel.update(m);
+//		NPC barry = new NPC("Barry the Bartender", barrysModel, barrysConvo);
+//		
+//		Model pollysModel = new Model();
+//		pollysModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+//		pollysModel.update(m);
+//		NPC polly = new NPC("Polly the Patron", pollysModel, pollysConvo);
+//		
+//		Model petesModel = new Model();
+//		petesModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+//		petesModel.update(m);
+//		NPC pete = new NPC("Pete the Patron", petesModel, petesConvo);
+//		
+//		Model rossModel = new Model();
+//		rossModel.add(reflexive, antiSymmetric, transitive, exclusive, bornEntail, bornReject);
+//		rossModel.update(m);
+//		NPC ross = new NPC("Ross the Boss", rossModel, rossConvo);
+//		
+//		Network net = new Network(barry, polly, pete, ross);
+//		net.addConnection(polly, ross);
+//		net.addConnection(pete, ross);
 		
 		try {
-			barry.talkWithPlayer();
+			farlo.talkWithPlayer();
 		} catch (IOException | InterruptedException e5) {
 			e5.printStackTrace();
 		}
-		net.update(barry);
 		
-		try {
-			polly.talkWithPlayer();
-		} catch (IOException | InterruptedException e5) {
-			e5.printStackTrace();
-		}
-		net.update(polly);
-		
-		try {
-			pete.talkWithPlayer();
-		} catch (IOException | InterruptedException e5) {
-			e5.printStackTrace();
-		}
-		net.update(pete);
-		
-		System.out.print("Ross the boss: ");
-		if (ross.getModel().hasInconsistency()) {
-			System.out.println("You lied. So you died.");
-		} else {
-			try {
-				ross.talkWithPlayer();
-			} catch (IOException | InterruptedException e5) {
-				e5.printStackTrace();
-			}
-		}
+//		try {
+//			barry.talkWithPlayer();
+//		} catch (IOException | InterruptedException e5) {
+//			e5.printStackTrace();
+//		}
+//		net.update(barry);
+//		
+//		try {
+//			polly.talkWithPlayer();
+//		} catch (IOException | InterruptedException e5) {
+//			e5.printStackTrace();
+//		}
+//		net.update(polly);
+//		
+//		try {
+//			pete.talkWithPlayer();
+//		} catch (IOException | InterruptedException e5) {
+//			e5.printStackTrace();
+//		}
+//		net.update(pete);
+//		
+//		System.out.print("Ross the boss: ");
+//		if (ross.getModel().hasInconsistency()) {
+//			System.out.println("You lied. So you died.");
+//		} else {
+//			try {
+//				ross.talkWithPlayer();
+//			} catch (IOException | InterruptedException e5) {
+//				e5.printStackTrace();
+//			}
+//		}
 		
 //		try {
 //			ross.talkWithPlayer();

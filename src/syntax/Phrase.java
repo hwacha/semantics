@@ -7,8 +7,8 @@ public class Phrase extends Expression {
 	private Expression left;
 	private Expression right;
 	
-	public Phrase(Expression left, Expression right) {
-		super(null);
+	public Phrase(Expression left, Expression right, SpeechAct actType) {
+		super(null, actType);
 		
 		if (left.cat instanceof Right) {
 			Right r = (Right) left.cat;
@@ -35,5 +35,9 @@ public class Phrase extends Expression {
 		this.left = left;
 		this.right = right;
 		this.name = left.name + " " + right.name;
+	}
+	
+	public Phrase(Expression left, Expression right) {
+		this(left, right, new Honest());
 	}
 }

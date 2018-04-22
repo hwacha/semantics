@@ -50,7 +50,7 @@ public class NPC {
 		return new String(cs);
 	}
 	
-	private boolean pollOption(BufferedReader r, String option) throws InterruptedException, IOException {
+	private boolean pollOption(BufferedReader r, String option, String display) throws InterruptedException, IOException {
 		// clear input stream.
 		while (r.ready()) {
 			r.readLine();
@@ -60,37 +60,42 @@ public class NPC {
 		System.out.print(option);
 		
 		Thread.sleep(500);
-		// if input happen with current option.
+		// if input happens with current option.
 		if (r.ready()) {
-			System.out.println("You: " + option);
+			System.out.println();
+			System.out.println("You: " + display);
 			return true;
 		}
 		
 		System.out.print(" .");
 		Thread.sleep(500);
 		if (r.ready()) {
-			System.out.println("You: " + option);
+			System.out.println();
+			System.out.println("You: " + display);
 			return true;
 		}
 		
 		System.out.print(".");
 		Thread.sleep(500);
 		if (r.ready()) {
-			System.out.println("You: " + option);
+			System.out.println();
+			System.out.println("You: " + display);
 			return true;
 		}
 		
 		System.out.print(".");
 		if (r.ready()) {
-			System.out.println("You: " + option);
+			System.out.println();
+			System.out.println("You: " + display);
 			return true;
 		}
 		
 		Thread.sleep(500);
 		
-		// if input happen with current option.
+		// if input happens with current option.
 		if (r.ready()) {
-			System.out.println("You: " + option);
+			System.out.println();
+			System.out.println("You: " + display);
 			return true;
 		}
 		
@@ -116,10 +121,13 @@ public class NPC {
 		Expression[] options = p.getOptions();
 		Message[][] responses = p.getResponses();
 		
+		
+		
 		for (int i = 0; i < options.length - 1; i++) {
-			if (pollOption(r, options[i].toString())) {
+			if (pollOption(r, options[i].toStringWithType(), options[i].toString())) {
 				this.model.update(options[i].getForm());
 				this.model.update();
+				
 				for (Message q : responses[i]) {
 					if (q.meetsConditions(this.model)) {
 						prompt(r, q);
@@ -132,7 +140,7 @@ public class NPC {
 		}
 		
 		if (isDefault) {
-			System.out.print(options[options.length - 1] + " (Default)");
+			System.out.print(options[options.length - 1].toStringWithType() + " (Default)");
 			
 			do {
 			
@@ -168,12 +176,14 @@ public class NPC {
 				System.out.println();
 			} while (false);
 			
+			System.out.println();
 			System.out.println("You: " + options[options.length - 1]);
+			
 			this.model.update(options[options.length - 1].getForm());
 			this.model.update();
 			for (Message q : responses[options.length - 1]) {
-				if (q.meetsConditions(this.model)) {
-					System.out.println(q);
+				if (q.meetsConditions(this.model)) {		
+					prompt(r, q);
 					Thread.sleep(1500);
 				}
 			}
