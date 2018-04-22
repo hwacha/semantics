@@ -55,6 +55,32 @@ public class TruthValue implements SemanticValue {
 		}
 		return hasChanged;
 	}
+	
+	public boolean add(TruthValue tv) {
+		boolean hasChanged = false;
+		if (tv.isTrue()) {
+			if (!isTrue) {
+				isTrue = true;
+				hasChanged = true;
+			}
+		} else if (tv.isFalse()) {
+			if (!isFalse) {
+				isFalse = true;
+				hasChanged = true;
+			}
+		} else if (tv.isUnknown()) {
+			hasChanged = false;
+		} else {
+			if (isTrue && isFalse) {
+				return false;
+			} else {
+				isTrue = true;
+				isFalse = true;
+				return true;
+			}
+		}
+		return hasChanged;
+	}
 
 	@Override
 	public int getID() {
