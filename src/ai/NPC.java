@@ -58,6 +58,17 @@ public class NPC {
 		// print the available option.
 		System.out.print(option);
 		
+		//checking if player is consistent
+		if(model.hasInconsistency()) {
+			LogicalForm isConsistent = new Constant(new Arrow(new E(), new T()), 29);
+			try {
+				model.update(new Not(new Application(isConsistent, new Constant(new E(), 11))));
+			} catch (InvalidTypeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		Thread.sleep(500);
 		// if input happens with current option.
 		if (r.ready()) {
