@@ -55,7 +55,8 @@ public class Variable implements LogicalForm {
 
 	@Override
 	public LogicalForm bind(int id, LogicalForm l) {
-		if (this.id == id && l.getType().equals(this.getType())) return l; else return this;
+		if (this.id == id && l.getType().equals(this.getType())) return l;
+		else return this;
 	}
 
 	@Override

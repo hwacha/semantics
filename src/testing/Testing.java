@@ -16,7 +16,7 @@ public class Testing {
 		Individual mike = new Individual(5);
 		Individual dan = new Individual(20);
 		Individual player = new Individual(123);
-//		
+		//		
 		Word billName = new Word("Bill", new NP(), 4);
 		Word mikeName = new Word("Mike", new NP(), 5);
 		Word danName = new Word("Dan", new NP(), 20);

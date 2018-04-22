@@ -26,6 +26,7 @@ public class Network {
 	public void update(NPC source) {
 		if (connections.containsKey(source)) { 
 			for (NPC target : connections.get(source)) {
+				// design decisions: do we want - inference cycles? inference plugs?
 				if (target.getModel().update(source.getModel())) {
 					update(target);
 				}

@@ -143,4 +143,8 @@ public class Rule {
 		
 		return s.toString();
 	}
+	
+	public static void main(String[] args) {
+		System.out.println("A, B, \u22A4 \u22A2 C, D, \u22A5");
+	}
 }
