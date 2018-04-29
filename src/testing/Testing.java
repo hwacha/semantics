@@ -222,13 +222,13 @@ public class Testing {
 					new Message[]{new Message("Dan is a generic name.")}});
 		
 		// the player was born in x.
-		LogicalForm playerWasBornIn2 = new Application(new Constant(new Arrow(new E(), eToT), 12), new Constant(new E(), 123));
+		// LogicalForm playerWasBornIn2 = new Application(new Constant(new Arrow(new E(), eToT), 12), new Constant(new E(), 123));
 		
 		// the player was born in elmira.
-		Expression e6 = new Word("Elmira.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 6)));
-		Expression n2 = new Word("New York.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 7)));
-		Expression p2 = new Word("Paris.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 8)));
-		Expression f2 = new Word("France.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 9)));
+//		Expression e6 = new Word("Elmira.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 6)));
+//		Expression n2 = new Word("New York.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 7)));
+//		Expression p2 = new Word("Paris.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 8)));
+//		Expression f2 = new Word("France.", new S(), new Application(playerWasBornIn2, new Constant(new E(), 9)));
 		
 		
 		//TODO change so that you only need the NPs instead of whole sentence:
@@ -277,54 +277,54 @@ public class Testing {
 		Model farlosModel = new Model();
 		NPC farlo = new NPC("Farlo", farlosModel, new Message[]{farlosIntro});
 		
-		//Effi - Mags & OJ starts here:
-		Prompt effisIntro = new Prompt("Hey. Where's Raffa?",
-				new Expression[]{new Word("I'm new here. Just got here from Earth.", h), //triggers questioning 1
-								 new Word("I'm new here. Who's Raffa?", h),
-								 new Word("Don't know what happened to him. Can I help you with anything?", h),
-								 new Word("Raffa went out to get groceries. ", l),
-								 new Word("Raffa's dead.", l),
-								 new Word("I've been here a while now; maybe Raffa got replaced.", l),
-								 new Word("Don't know. Can I help you?", d), 
-								 new Word("Who's asking?", d),
-								 new Word("What's wrong with your face?", d)},
-				new Message[][]{{questioning1}, 
-								{new Message("He used to work here."), specialOrder}, 
-								{specialOrder}, 
-								{new Message("Oh okay... wait a sec. This is a grocery store. I don't know what you're"
-										   + "hiding, but i'm not gonna ask."), specialOrder}, 
-								{new Message("Damn. Guy had it coming, I guess..."), specialOrder}, 
-								{specialOrder}, 
-								{specialOrder}, 
-								{new Message("Oh... the name's Effi. Raffa was a friend."), specialOrder}, 
-								{new Prompt("What? What’s wrong with it? Do I have something on it?", 
-										new Expression[]{new Word("Oh, no. Nevermind. I must be seeing things.")},
-										new Message[][] {blank})}});
-		
-		Prompt questioning1 = new Prompt("*squints suspiciously* What was your name again?",
-				new Expression[]{new Word("I'm new here. Just got here from Earth.", h), //triggers questioning 1
-						 new Word("Jane.", h),
-						 new Word("Janet.", l),
-						 new Word("Jody.", l),
-						 new Word("J’thalux.", l),
-						 new Word("You know what, let me just check the back.", d), //only available if lie check 1 inconsistent
-						 new Word("Listen, buddy. Get out of here or I'll report you for trying to get" + 
-						 "human goods", d)},
-				new Message[][]{blank, 
-						//LEFT OFF COPYING FROM GOOGLE DOCS HERE 4/22
-						{new Message("He used to work here."), specialOrder}, 
-						{specialOrder}, 
-						{new Message("Oh okay... wait a sec. This is a grocery store. I don't know what you're"
-								   + "hiding, but i'm not gonna ask."), specialOrder}, 
-						{new Message("Damn. Guy had it coming, I guess..."), specialOrder}, 
-						{specialOrder}, 
-						{specialOrder}, 
-						{new Message("Oh... the name's Effi. Raffa was a friend."), specialOrder}, 
-						{new Prompt("What? What’s wrong with it? Do I have something on it?", 
-								new Expression[]{new Word("Oh, no. Nevermind. I must be seeing things.")},
-								new Message[][] {blank})}});
-		
-		Prompt specialOrder = new Prompt();
+//		//Effi - Mags & OJ starts here:
+//		Prompt effisIntro = new Prompt("Hey. Where's Raffa?",
+//				new Expression[]{new Word("I'm new here. Just got here from Earth.", h), //triggers questioning 1
+//								 new Word("I'm new here. Who's Raffa?", h),
+//								 new Word("Don't know what happened to him. Can I help you with anything?", h),
+//								 new Word("Raffa went out to get groceries. ", l),
+//								 new Word("Raffa's dead.", l),
+//								 new Word("I've been here a while now; maybe Raffa got replaced.", l),
+//								 new Word("Don't know. Can I help you?", d), 
+//								 new Word("Who's asking?", d),
+//								 new Word("What's wrong with your face?", d)},
+//				new Message[][]{{questioning1}, 
+//								{new Message("He used to work here."), specialOrder}, 
+//								{specialOrder}, 
+//								{new Message("Oh okay... wait a sec. This is a grocery store. I don't know what you're"
+//										   + "hiding, but i'm not gonna ask."), specialOrder}, 
+//								{new Message("Damn. Guy had it coming, I guess..."), specialOrder}, 
+//								{specialOrder}, 
+//								{specialOrder}, 
+//								{new Message("Oh... the name's Effi. Raffa was a friend."), specialOrder}, 
+//								{new Prompt("What? Whatï¿½s wrong with it? Do I have something on it?", 
+//										new Expression[]{new Word("Oh, no. Nevermind. I must be seeing things.")},
+//										new Message[][] {blank})}});
+//		
+//		Prompt questioning1 = new Prompt("*squints suspiciously* What was your name again?",
+//				new Expression[]{new Word("I'm new here. Just got here from Earth.", h), //triggers questioning 1
+//						 new Word("Jane.", h),
+//						 new Word("Janet.", l),
+//						 new Word("Jody.", l),
+//						 new Word("J'thalux.", l),
+//						 new Word("You know what, let me just check the back.", d), //only available if lie check 1 inconsistent
+//						 new Word("Listen, buddy. Get out of here or I'll report you for trying to get" + 
+//						 "human goods", d)},
+//				new Message[][]{blank, 
+//						//LEFT OFF COPYING FROM GOOGLE DOCS HERE 4/22
+//						{new Message("He used to work here."), specialOrder}, 
+//						{specialOrder}, 
+//						{new Message("Oh okay... wait a sec. This is a grocery store. I don't know what you're"
+//								   + "hiding, but i'm not gonna ask."), specialOrder}, 
+//						{new Message("Damn. Guy had it coming, I guess..."), specialOrder}, 
+//						{specialOrder}, 
+//						{specialOrder}, 
+//						{new Message("Oh... the name's Effi. Raffa was a friend."), specialOrder}, 
+//						{new Prompt("What? Whatï¿½s wrong with it? Do I have something on it?", 
+//								new Expression[]{new Word("Oh, no. Nevermind. I must be seeing things.")},
+//								new Message[][] {blank})}});
+//		
+//		Prompt specialOrder = new Prompt();
 		
 		
 		

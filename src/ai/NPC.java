@@ -138,6 +138,14 @@ public class NPC {
 				this.model.update(options[i].getForm());
 				this.model.update();
 				
+				if (this.model.hasInconsistency()) {
+					try {
+						this.model.update(new Application(new Constant(new Arrow(new E(), new T()),  29), new Constant(new E(), 11)));
+					} catch (InvalidTypeException e) {
+						e.printStackTrace();
+					}
+				}
+				
 				for (Message q : responses[i]) {
 					if (q.meetsConditions(this.model)) {
 						prompt(r, q);
@@ -191,6 +199,15 @@ public class NPC {
 			
 			this.model.update(options[options.length - 1].getForm());
 			this.model.update();
+			
+			if (this.model.hasInconsistency()) {
+				try {
+					this.model.update(new Application(new Constant(new Arrow(new E(), new T()),  29), new Constant(new E(), 11)));
+				} catch (InvalidTypeException e) {
+					e.printStackTrace();
+				}
+			}
+			
 			for (Message q : responses[options.length - 1]) {
 				if (q.meetsConditions(this.model)) {		
 					prompt(r, q);
