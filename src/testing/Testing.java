@@ -110,7 +110,14 @@ public class Testing {
 		
 		Function knowsTheStatusOfRaffaIs = new Function(32);
 		Function janeKnowsTheStatusOfRaffaIs = new Function(33);
-	
+		
+		LogicalForm janeKnowsRaffaStatusRef = new Application(new Constant(new Arrow(new E(), new T()), 32), new Constant(new E(), 11));
+		LogicalForm janeKnowsRaffaRef = new Application(new Constant(new Arrow(new E(), new T()), 30), new Constant(new E(), 11));
+		LogicalForm theStatusOfRaffaIsGroceriesRef = new Application(new Constant(new Arrow(new E(), new T()), 31), new Constant(new E(), 8));
+		LogicalForm theStatusOfRaffaIsDeadRef = new Application(new Constant(new Arrow(new E(), new T()), 31), new Constant(new E(), 7));
+		
+		
+		
 		janeKnowsTheStatusOfRaffaIs.set(dead, new TruthValue());
 		janeKnowsTheStatusOfRaffaIs.set(gettingGroceries, new TruthValue());
 		janeKnowsTheStatusOfRaffaIs.set(replaced, new TruthValue());
@@ -235,6 +242,7 @@ public class Testing {
 		// give template combining question and response.
 		
 		Honest h = new Honest();
+		Ask a = new Ask();
 		Lie l = new Lie();
 		Deflect d = new Deflect();
 		
@@ -278,56 +286,149 @@ public class Testing {
 		NPC farlo = new NPC("Farlo", farlosModel, new Message[]{farlosIntro});
 		
 //		//Effi - Mags & OJ starts here:
-//		Prompt effisIntro = new Prompt("Hey. Where's Raffa?",
-//				new Expression[]{new Word("I'm new here. Just got here from Earth.", h), //triggers questioning 1
-//								 new Word("I'm new here. Who's Raffa?", h),
-//								 new Word("Don't know what happened to him. Can I help you with anything?", h),
-//								 new Word("Raffa went out to get groceries. ", l),
-//								 new Word("Raffa's dead.", l),
-//								 new Word("I've been here a while now; maybe Raffa got replaced.", l),
-//								 new Word("Don't know. Can I help you?", d), 
-//								 new Word("Who's asking?", d),
-//								 new Word("What's wrong with your face?", d)},
-//				new Message[][]{{questioning1}, 
-//								{new Message("He used to work here."), specialOrder}, 
-//								{specialOrder}, 
-//								{new Message("Oh okay... wait a sec. This is a grocery store. I don't know what you're"
-//										   + "hiding, but i'm not gonna ask."), specialOrder}, 
-//								{new Message("Damn. Guy had it coming, I guess..."), specialOrder}, 
-//								{specialOrder}, 
-//								{specialOrder}, 
-//								{new Message("Oh... the name's Effi. Raffa was a friend."), specialOrder}, 
-//								{new Prompt("What? Whatï¿½s wrong with it? Do I have something on it?", 
-//										new Expression[]{new Word("Oh, no. Nevermind. I must be seeing things.")},
-//										new Message[][] {blank})}});
-//		
-//		Prompt questioning1 = new Prompt("*squints suspiciously* What was your name again?",
-//				new Expression[]{new Word("I'm new here. Just got here from Earth.", h), //triggers questioning 1
-//						 new Word("Jane.", h),
-//						 new Word("Janet.", l),
-//						 new Word("Jody.", l),
-//						 new Word("J'thalux.", l),
-//						 new Word("You know what, let me just check the back.", d), //only available if lie check 1 inconsistent
-//						 new Word("Listen, buddy. Get out of here or I'll report you for trying to get" + 
-//						 "human goods", d)},
-//				new Message[][]{blank, 
-//						//LEFT OFF COPYING FROM GOOGLE DOCS HERE 4/22
-//						{new Message("He used to work here."), specialOrder}, 
-//						{specialOrder}, 
-//						{new Message("Oh okay... wait a sec. This is a grocery store. I don't know what you're"
-//								   + "hiding, but i'm not gonna ask."), specialOrder}, 
-//						{new Message("Damn. Guy had it coming, I guess..."), specialOrder}, 
-//						{specialOrder}, 
-//						{specialOrder}, 
-//						{new Message("Oh... the name's Effi. Raffa was a friend."), specialOrder}, 
-//						{new Prompt("What? Whatï¿½s wrong with it? Do I have something on it?", 
-//								new Expression[]{new Word("Oh, no. Nevermind. I must be seeing things.")},
-//								new Message[][] {blank})}});
-//		
-//		Prompt specialOrder = new Prompt();
+
+		LogicalForm playerIsConsistent = new Application(new Constant(new Arrow(new E(), new T()), 29), new Constant(new E(), 11));
+		LogicalForm playerIsInconsistent = new Not(playerIsConsistent);
+
+		Prompt janePrompt = new Prompt("And where are you from, Jane?", 
+				new Expression[] {
+						new Word("Earth", h),
+						new Word("America", h), 
+						new Word("Elmira", h), 
+						new Word("Right here, on 665th street.", l), 
+						new Word("The third circle.", l)}, 
+				new Message[][] {
+						{new Message("YOU'RE A HUMAN, BEGONE, SCUM. <Effi swipes at Jane with his clawed hands, killing her instantly>. YOU LOSE.")}, 
+						{new Message("YOU'RE A HUMAN, BEGONE, SCUM. <Effi swipes at Jane with his clawed hands, killing her instantly>. YOU LOSE.")},
+						{new Message("What in the heck is Elmira? You know what, never mind."), 
+						 new Prompt("Think you can just check the back?", 
+									new Expression[] {
+											new Word("Ok."), 
+											new Word("Sorry, no can do. Get out of here or I'll report you.")}, 
+												new Message[][] {{new Message("YOU PROGRESS TO THE NEXT LEVEL.")}, 
+																 {new Message("No, no! Okay okay! Sorry. I'll leave! END OF LEVEL.")}})},
+						{new Message("Haven't really seen you around here... you know what, never mind. Think you can just check the back? YOU PROGRESS TO THE NEXT LEVEL."),
+						 new Prompt("Think you can just check the back?", 
+									new Expression[] {
+											new Word("Ok."), 
+											new Word("Sorry, no can do. Get out of here or I'll report you.")}, 
+												new Message[][] {{new Message("YOU PROGRESS TO THE NEXT LEVEL.")}, 
+																 {new Message("No, no! Okay okay! Sorry. I'll leave! END OF LEVEL.")}})}, 
+						{new Message("What a small world! Didn't think I'd see a fellow Third Circler around here."), 
+						 new Prompt("Think you can just check the back?", 
+									new Expression[] {
+											new Word("Ok."), 
+											new Word("Sorry, no can do. Get out of here or I'll report you.")}, 
+												new Message[][] {{new Message("YOU PROGRESS TO THE NEXT LEVEL.")}, 
+																 {new Message("No, no! Okay okay! Sorry. I'll leave! END OF LEVEL.")}})}});
+			
+		Prompt questioning1Consistent = new Prompt("*squints suspiciously* What was your name again?", new LogicalForm[] {playerIsConsistent},
+				new Expression[]{ 
+						 new Word("Jane.", h), 
+						 new Word("Janet.", l),
+						 new Word("Jody.", l),
+						 new Word("J'thalux.", l)},
+				new Message[][]{
+						{janePrompt}, 
+						{janePrompt.withNewString("And where are you from, Janet?")}, 
+						{janePrompt.withNewString("And where are you from, Jody?")},
+						{janePrompt.withNewString("And where are you from, J'thalux?")}});
+		
+		Prompt questioning1Inconsistent = new Prompt("*squints suspiciously* What was your name again?", new LogicalForm[] {playerIsInconsistent},
+				new Expression[]{ 
+						 new Word("Jane.", h), 
+						 new Word("Janet.", l),
+						 new Word("Jody.", l),
+						 new Word("J'thalux.", l),
+						 new Word("You know what, let me just check the back.", d),
+						 new Word("Listen, buddy. Get out of here or I'll report you for trying to get" + 
+						 "human goods", d)},
+				new Message[][]{
+						{janePrompt}, 
+						{janePrompt.withNewString("And where are you from, Janet?")}, 
+						{janePrompt.withNewString("And where are you from, Jody?")},
+						{janePrompt.withNewString("And where are you from, J'thalux?")},
+						{new Message("END OF LEVEL.")},
+						{new Message("No no! Okay okay! Sorry, I'll leave! END OF LEVEL.")}});
+		
+		Prompt lieCheck = new Prompt("...alright, alright. Think you can just check the back?", new LogicalForm[] {playerIsInconsistent},
+				new Expression[] {
+						new Word("Okay.", h), 
+						new Word("Sorry, no can do. Get out of here or I'll report you.", h)}, 
+		       new Message[][] {
+			{new Message("END OF LEVEL")}, {new Message("No, no. Okay, okay! Sorry, I'll leave. END OF LEVEL")}});
+		
+		Prompt specialOrder = new Prompt("So um... not sure if Raffa left you a note or any instructions"
+				+ "or something... but I usually get some special-ordered items from here. You know anything about it?", 
+				new Expression[] {
+						new Word("Nope, sorry.", h), 
+						new Word("No, but I can check the back.", h), 
+						new Word("Oh yeah. He said I can’t do that for you anymore.", l), 
+						new Word("It's, um, not here yet.", l), 
+						new Word("Yeah, totally. I'll check the back.", l), 
+						new Word("What special-ordered items are these again?", a)},
+				new Message[][] {
+					{new Prompt("Think you can just check the back?", 
+							new Expression[] {
+									new Word("Sure."), 
+									new Word("No.")}, 
+										new Message[][] {{new Message("END OF LEVEL.")}, 
+														 {new Message("I'll just... go somewhere else then. "
+														 		+ "Listen, don't tell anyone I asked, okay? END OF LEVEL.")}})},
+					{new Message("Oh... um... yeah. That would be great. END OF LEVEL")},
+					{new Prompt("Bullshit! Where did you say Raffa was again? I want to speak with him.",
+							new Expression[] {
+									new Word("I told you, I don't know where he is.", new S(), new Not(janeKnowsRaffaStatusRef)),
+									new Word("I don't even know who Raffa is.", new S(), new Not(janeKnowsRaffaRef)), 
+									new Word("He went to get groceries.", new S(), theStatusOfRaffaIsGroceriesRef),
+									new Word("Raffa's dead.", new S(), theStatusOfRaffaIsDeadRef)}, 
+							new Message[][] {{lieCheck}, {lieCheck}, {lieCheck}, {lieCheck}})},
+					{new Prompt("Bullshit! It's never late. Where did you say Raffa was again? I want to speak with him.",
+							new Expression[] {
+									new Word("I told you, I don't know where he is.", new S(), new Not(janeKnowsRaffaStatusRef)),
+									new Word("I don't even know who Raffa is.", new S(), new Not(janeKnowsRaffaRef)), 
+									new Word("He went to get groceries.", new S(), theStatusOfRaffaIsGroceriesRef),
+									new Word("Raffa's dead.", new S(), theStatusOfRaffaIsDeadRef)}, 
+							new Message[][] {{lieCheck}, {lieCheck}, {lieCheck}, {lieCheck}})},
+					{new Message("END OF LEVEL.")},
+					{new Prompt("*Effi looks around all shifty, makes sure no one is within earshot, leans forward and whispers* "
+							+ "Two items. One a vile bright colored drink and the other... a text not of this world. Human items.", 
+							new Expression[] {
+								new Word("Oh. right. I’ll go check the back. END OF LEVEL."),
+								new Word("Why are you acting all suspicious?"),
+								new Word("What’s wrong with human items?")}, 
+							new Message[][] {
+								blank, 
+								{new Message("What’s wrong with you? Those are human goods. Don’t you know they’re illegal?"), 
+									questioning1Consistent},
+								{new Message("Shhh! Don’t say that so loud! What’s wrong with you? Don’t you know they’re illegal?"), 
+								    questioning1Consistent}})}});
+		
+		Prompt effisIntro = new Prompt("Hey. Where's Raffa?",
+				new Expression[]{new Word("I'm new here. Just got here from Earth.", h), //triggers questioning 1
+								 new Word("I'm new here. Who's Raffa?", h),
+								 new Word("Don't know what happened to him. Can I help you with anything?", h),
+								 new Word("Raffa went out to get groceries. ", l),
+								 new Word("Raffa's dead.", l),
+								 new Word("I've been here a while now; maybe Raffa got replaced.", l),
+								 new Word("Don't know. Can I help you?", d), 
+								 new Word("Who's asking?", d),
+								 new Word("What's wrong with your face?", d)},
+				new Message[][]{{questioning1Consistent, questioning1Inconsistent}, 
+								{new Message("He used to work here."), specialOrder}, 
+								{specialOrder}, 
+								{new Message("Oh okay... wait a sec. This is a grocery store. I don't know what you're"
+										   + "hiding, but i'm not gonna ask."), specialOrder}, 
+								{new Message("Damn. Guy had it coming, I guess..."), specialOrder}, 
+								{specialOrder}, 
+								{specialOrder}, 
+								{new Message("Oh... the name's Effi. Raffa was a friend."), specialOrder}, 
+								{new Prompt("What? What's wrong with it? Do I have something on it?", 
+										new Expression[]{new Word("Oh, no. Never mind. I must be seeing things.")},
+										new Message[][] {blank})}});
 		
 		
-		
+		NPC effiNPC = new NPC("Effi", effisModel, new Message[]{effisIntro});
 		
 		// make some sentences
 //		Constant eRef = new Constant(new E(), 6);
@@ -540,6 +641,7 @@ public class Testing {
 		
 		try {
 			farlo.talkWithPlayer();
+			effiNPC.talkWithPlayer();
 		} catch (IOException | InterruptedException e5) {
 			e5.printStackTrace();
 		}

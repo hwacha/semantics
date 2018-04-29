@@ -12,6 +12,10 @@ public class Message {
 		this.conditions = conditions;
 	}
 	
+	public Message withNewString(String message) {
+		return new Message(message, conditions);
+	}
+	
 	public Message(String message) {
 		this(message, null);
 	}

@@ -25,4 +25,9 @@ public class Prompt extends Message {
 	public Message[][] getResponses() {
 		return responses;
 	}
+	
+	@Override
+	public Prompt withNewString(String message) {
+		return new Prompt(message, conditions, options, responses);
+	}
 }
